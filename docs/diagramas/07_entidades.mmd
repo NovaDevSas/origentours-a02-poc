@@ -1,0 +1,39 @@
+erDiagram
+    direction LR
+    CLIENTE ||--o{ SOLICITUD : "realiza"
+    SOLICITUD ||--o{ ANALISIS_SOLICITUD : "es analizada en"
+    CLIENTE {
+        uuid id_cliente PK
+        string nombre
+        string tipo_cliente "INDIVIDUAL | GRUPO_ACADEMICO | ORGANIZACION"
+        string organizacion
+        string email
+        string telefono
+        datetime fecha_registro
+    }
+    SOLICITUD {
+        string id_solicitud PK "COT-AAAA-NNNN"
+        uuid id_cliente FK
+        string canal_origen "CORREO | WHATSAPP | FORMULARIO"
+        text texto_original
+        datetime fecha_recepcion
+        string estado "RECIBIDA | ANALIZADA | EN_ACLARACION | VALIDADA"
+        string asesor_asignado
+    }
+    ANALISIS_SOLICITUD {
+        uuid id_analisis PK
+        string id_solicitud FK
+        int version
+        string modelo_llm
+        json requerimientos
+        json campos_faltantes
+        json preguntas_sugeridas
+        boolean informacion_suficiente "decision D1"
+        decimal confianza
+        boolean requiere_revision_humana
+        int latencia_ms
+        int tokens_entrada
+        int tokens_salida
+        decimal costo_usd
+        datetime fecha_analisis
+    }

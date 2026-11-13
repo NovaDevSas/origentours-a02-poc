@@ -1,0 +1,20 @@
+[
+  {
+    "id_caso": "CASO-01",
+    "canal": "CORREO",
+    "texto": "Buenos días. Soy la profesora Gómez de la Universidad del Valle, Facultad de Ciencias. Queremos organizar una salida de campo al Eje Cafetero para 28 estudiantes, 4 días a partir del 15 de marzo de 2027. Nos interesa la caficultura y el avistamiento de aves. 3 personas son vegetarianas.",
+    "esperado": { "destino_preferido": "Eje Cafetero", "numero_viajeros": 28, "duracion_dias": 4, "fecha_inicio_estimada": "2027-03-15", "campos_faltantes": ["ciudad_de_salida", "presupuesto_por_persona_cop"] }
+  },
+  {
+    "id_caso": "CASO-02",
+    "canal": "WHATSAPP",
+    "texto": "Hola! somos 4 personas, queremos ir a Cartagena 5 días en junio de 2027 saliendo de Bogotá, presupuesto 2,5 millones por persona. Nos gusta la playa y la gastronomía",
+    "esperado": { "destino_preferido": "Cartagena", "numero_viajeros": 4, "duracion_dias": 5, "ciudad_de_salida": "Bogotá", "presupuesto_por_persona_cop": 2500000, "campos_faltantes": [] }
+  },
+  {
+    "id_caso": "CASO-03",
+    "canal": "FORMULARIO",
+    "texto": "Quisiera información de planes de aventura, rafting en San Gil. Gracias.",
+    "esperado": { "destino_preferido": "San Gil", "campos_faltantes": ["ciudad_de_salida", "fecha_inicio_estimada", "duracion_dias", "numero_viajeros", "presupuesto_por_persona_cop"] }
+  }
+]

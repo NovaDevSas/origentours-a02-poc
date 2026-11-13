@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+**/node_modules/
+
+# Variables de entorno (contienen API keys)
+.env
+**/.env
+
+# Builds y logs
+dist/
+build/
+*.log
+npm-debug.log*
+coverage/
+backend/logs/
+
+# Sistema
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

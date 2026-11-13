@@ -1,0 +1,44 @@
+@startuml
+title PoC A02 - Análisis de solicitud con GenAI (OrigenTours)
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+actor "Cliente" as C
+participant "Canal\n(Correo / WhatsApp / Formulario)" as CH
+actor "Asesor de atención" as AS
+participant "Frontend React\n(Consola del asesor)" as FE
+participant "Backend Node.js\n(API REST)" as BE
+participant "Orquestador A02" as OR
+participant "Proveedor LLM\n(Claude / GPT)" as LLM
+participant "Validador de\nesquema JSON" as VAL
+database "Base de datos\n(Solicitudes y análisis)" as DB
+
+C -> CH: Envía solicitud en lenguaje natural
+CH -> AS: Solicitud recibida
+AS -> FE: Registra texto, canal y cliente
+FE -> BE: POST /api/solicitudes
+BE -> DB: Guarda solicitud (estado RECIBIDA)
+BE -> OR: analizar(solicitud)
+OR -> LLM: Prompt de sistema + texto + esquema A02
+LLM --> OR: Respuesta JSON
+OR -> VAL: validar(JSON, esquema A02)
+alt JSON inválido
+  VAL --> OR: errores
+  OR -> LLM: Reintento con errores de validación (máx. 1)
+  LLM --> OR: JSON corregido
+end
+OR -> OR: Calcula campos faltantes (lista mínima)\ny decisión D1
+OR --> BE: Análisis A02 + métricas (tiempo, tokens, costo)
+BE -> DB: Guarda análisis (estado ANALIZADA)
+BE --> FE: 201 Created + JSON A02
+FE --> AS: Muestra requerimientos, faltantes,\npreguntas sugeridas y confianza
+alt confianza < 0,8 o cliente estratégico
+  AS -> FE: Revisa y corrige campos
+end
+alt D1 = información insuficiente
+  AS -> CH: Envía preguntas de aclaración (A03)
+else D1 = información suficiente
+  AS -> FE: Aprueba traspaso a diseño (A05/A06)
+  FE -> BE: PATCH /api/solicitudes/{id}/estado
+  BE -> DB: Estado VALIDADA
+end
+@enduml

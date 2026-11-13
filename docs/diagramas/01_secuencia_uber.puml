@@ -1,0 +1,39 @@
+@startuml
+title App de transporte tipo Uber - Solicitud de viaje
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+actor Pasajero
+participant "App Pasajero" as AP
+participant "API Gateway" as GW
+participant "Servicio de Viajes" as SV
+participant "Servicio de Matching" as SM
+participant "Servicio de Precios" as SP
+participant "App Conductor" as AC
+actor Conductor
+participant "Servicio de Pagos" as PAY
+
+Pasajero -> AP: Ingresa origen y destino
+AP -> GW: POST /viajes/estimar
+GW -> SP: calcularTarifa(origen, destino)
+SP --> GW: tarifa estimada + ETA
+GW --> AP: Muestra tarifa
+Pasajero -> AP: Confirma solicitud
+AP -> GW: POST /viajes
+GW -> SV: crearViaje()
+SV -> SM: buscarConductor(ubicación)
+SM -> AC: Notificación de viaje (push)
+AC -> Conductor: Muestra solicitud
+alt Conductor acepta
+  Conductor -> AC: Acepta
+  AC -> SM: aceptarViaje(id)
+  SM -> SV: asignarConductor()
+  SV --> AP: Conductor asignado (WebSocket)
+else Rechaza o timeout
+  SM -> SM: Buscar siguiente conductor
+end
+Conductor -> AC: Inicia y finaliza viaje
+AC -> SV: finalizarViaje(id)
+SV -> PAY: cobrar(tarifaFinal)
+PAY --> SV: pago aprobado
+SV --> AP: Recibo y calificación
+@enduml

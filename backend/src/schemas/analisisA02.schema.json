@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://origentours.co/schemas/a02-analisis-solicitud.json",
+  "title": "Contrato de salida A02 - Análisis de la solicitud",
+  "type": "object",
+  "required": [
+    "id_solicitud", "actividad", "canal_origen", "fecha_recepcion", "tipo_cliente",
+    "requerimientos", "campos_faltantes", "informacion_suficiente",
+    "preguntas_sugeridas", "prioridad", "confianza", "requiere_revision_humana", "siguiente_paso"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "id_solicitud": { "type": "string", "pattern": "^COT-\\d{4}-\\d{4}$" },
+    "actividad": { "const": "A02_ANALISIS_SOLICITUD" },
+    "canal_origen": { "enum": ["CORREO", "WHATSAPP", "FORMULARIO"] },
+    "fecha_recepcion": { "type": "string", "format": "date-time" },
+    "tipo_cliente": { "enum": ["INDIVIDUAL", "GRUPO_ACADEMICO", "ORGANIZACION", "FAMILIA", "NO_DETERMINADO"] },
+    "organizacion": { "type": ["string", "null"] },
+    "requerimientos": {
+      "type": "object",
+      "required": [
+        "tipo_experiencia", "destino_preferido", "ciudad_de_salida", "fecha_inicio_estimada",
+        "duracion_dias", "numero_viajeros", "presupuesto_por_persona_cop", "restricciones", "intereses"
+      ],
+      "properties": {
+        "tipo_experiencia": {
+          "type": "array",
+          "items": { "enum": ["NATURALEZA", "CULTURAL", "AVENTURA", "GASTRONOMICA", "PLAYA", "BIENESTAR", "ACADEMICA", "CORPORATIVA"] }
+        },
+        "destino_preferido": { "type": ["string", "null"] },
+        "ciudad_de_salida": { "type": ["string", "null"] },
+        "fecha_inicio_estimada": { "type": ["string", "null"], "format": "date" },
+        "duracion_dias": { "type": ["integer", "null"], "minimum": 1, "maximum": 60 },
+        "numero_viajeros": { "type": ["integer", "null"], "minimum": 1, "maximum": 500 },
+        "presupuesto_por_persona_cop": { "type": ["number", "null"], "minimum": 0 },
+        "restricciones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["tipo", "detalle"],
+            "properties": {
+              "tipo": { "enum": ["ALIMENTARIA", "MOVILIDAD", "SALUD", "EDAD", "OTRA"] },
+              "detalle": { "type": "string" }
+            }
+          }
+        },
+        "intereses": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "campos_faltantes": { "type": "array", "items": { "type": "string" } },
+    "informacion_suficiente": { "type": "boolean" },
+    "preguntas_sugeridas": { "type": "array", "items": { "type": "string" } },
+    "prioridad": { "enum": ["ALTA", "MEDIA", "BAJA"] },
+    "confianza": { "type": "number", "minimum": 0, "maximum": 1 },
+    "requiere_revision_humana": { "type": "boolean" },
+    "siguiente_paso": { "enum": ["A03_PREGUNTAS_ADICIONALES", "A05_CONSOLIDAR_REQUERIMIENTOS"] },
+    "metadatos": { "type": "object" }
+  }
+}
